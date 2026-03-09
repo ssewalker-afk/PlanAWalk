@@ -7,19 +7,32 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		9C28408F2F5E603800DB2A45 /* PlanAWalk.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PlanAWalk.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9C06EE232F5E66FB00CA5ECF /* PlanAWalk.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PlanAWalk.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		9C06EE562F5E69D300CA5ECF /* Exceptions for "PlanAWalk" folder in "PlanAWalk" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 9C06EE222F5E66FB00CA5ECF /* PlanAWalk */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		9C2840912F5E603800DB2A45 /* PlanAWalk */ = {
+		9C06EE252F5E66FB00CA5ECF /* PlanAWalk */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				9C06EE562F5E69D300CA5ECF /* Exceptions for "PlanAWalk" folder in "PlanAWalk" target */,
+			);
 			path = PlanAWalk;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		9C28408C2F5E603800DB2A45 /* Frameworks */ = {
+		9C06EE202F5E66FB00CA5ECF /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -29,18 +42,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		9C2840862F5E603800DB2A45 = {
+		9C06EE1A2F5E66FB00CA5ECF = {
 			isa = PBXGroup;
 			children = (
-				9C2840912F5E603800DB2A45 /* PlanAWalk */,
-				9C2840902F5E603800DB2A45 /* Products */,
+				9C06EE252F5E66FB00CA5ECF /* PlanAWalk */,
+				9C06EE242F5E66FB00CA5ECF /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		9C2840902F5E603800DB2A45 /* Products */ = {
+		9C06EE242F5E66FB00CA5ECF /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				9C28408F2F5E603800DB2A45 /* PlanAWalk.app */,
+				9C06EE232F5E66FB00CA5ECF /* PlanAWalk.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,64 +61,64 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		9C28408E2F5E603800DB2A45 /* PlanAWalk */ = {
+		9C06EE222F5E66FB00CA5ECF /* PlanAWalk */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 9C28409A2F5E603900DB2A45 /* Build configuration list for PBXNativeTarget "PlanAWalk" */;
+			buildConfigurationList = 9C06EE2E2F5E66FD00CA5ECF /* Build configuration list for PBXNativeTarget "PlanAWalk" */;
 			buildPhases = (
-				9C28408B2F5E603800DB2A45 /* Sources */,
-				9C28408C2F5E603800DB2A45 /* Frameworks */,
-				9C28408D2F5E603800DB2A45 /* Resources */,
+				9C06EE1F2F5E66FB00CA5ECF /* Sources */,
+				9C06EE202F5E66FB00CA5ECF /* Frameworks */,
+				9C06EE212F5E66FB00CA5ECF /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				9C2840912F5E603800DB2A45 /* PlanAWalk */,
+				9C06EE252F5E66FB00CA5ECF /* PlanAWalk */,
 			);
 			name = PlanAWalk;
 			packageProductDependencies = (
 			);
 			productName = PlanAWalk;
-			productReference = 9C28408F2F5E603800DB2A45 /* PlanAWalk.app */;
+			productReference = 9C06EE232F5E66FB00CA5ECF /* PlanAWalk.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		9C2840872F5E603800DB2A45 /* Project object */ = {
+		9C06EE1B2F5E66FB00CA5ECF /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 2620;
 				LastUpgradeCheck = 2620;
 				TargetAttributes = {
-					9C28408E2F5E603800DB2A45 = {
+					9C06EE222F5E66FB00CA5ECF = {
 						CreatedOnToolsVersion = 26.2;
 					};
 				};
 			};
-			buildConfigurationList = 9C28408A2F5E603800DB2A45 /* Build configuration list for PBXProject "PlanAWalk" */;
+			buildConfigurationList = 9C06EE1E2F5E66FB00CA5ECF /* Build configuration list for PBXProject "PlanAWalk" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
 			);
-			mainGroup = 9C2840862F5E603800DB2A45;
+			mainGroup = 9C06EE1A2F5E66FB00CA5ECF;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 9C2840902F5E603800DB2A45 /* Products */;
+			productRefGroup = 9C06EE242F5E66FB00CA5ECF /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				9C28408E2F5E603800DB2A45 /* PlanAWalk */,
+				9C06EE222F5E66FB00CA5ECF /* PlanAWalk */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		9C28408D2F5E603800DB2A45 /* Resources */ = {
+		9C06EE212F5E66FB00CA5ECF /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -115,7 +128,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		9C28408B2F5E603800DB2A45 /* Sources */ = {
+		9C06EE1F2F5E66FB00CA5ECF /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -125,7 +138,7 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		9C2840982F5E603900DB2A45 /* Debug */ = {
+		9C06EE2C2F5E66FD00CA5ECF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -187,7 +200,7 @@
 			};
 			name = Debug;
 		};
-		9C2840992F5E603900DB2A45 /* Release */ = {
+		9C06EE2D2F5E66FD00CA5ECF /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -241,11 +254,12 @@
 			};
 			name = Release;
 		};
-		9C28409B2F5E603900DB2A45 /* Debug */ = {
+		9C06EE2F2F5E66FD00CA5ECF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = PlanAWalk/PlanAWalk.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = Q79FHUWC44;
@@ -254,6 +268,8 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PlanAWalk/Info.plist;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "PlanAWalk needs access to your walking workouts to track your progress toward your goals and award badges.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -285,11 +301,12 @@
 			};
 			name = Debug;
 		};
-		9C28409C2F5E603900DB2A45 /* Release */ = {
+		9C06EE302F5E66FD00CA5ECF /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = PlanAWalk/PlanAWalk.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = Q79FHUWC44;
@@ -298,6 +315,8 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PlanAWalk/Info.plist;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "PlanAWalk needs access to your walking workouts to track your progress toward your goals and award badges.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -332,25 +351,25 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		9C28408A2F5E603800DB2A45 /* Build configuration list for PBXProject "PlanAWalk" */ = {
+		9C06EE1E2F5E66FB00CA5ECF /* Build configuration list for PBXProject "PlanAWalk" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				9C2840982F5E603900DB2A45 /* Debug */,
-				9C2840992F5E603900DB2A45 /* Release */,
+				9C06EE2C2F5E66FD00CA5ECF /* Debug */,
+				9C06EE2D2F5E66FD00CA5ECF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		9C28409A2F5E603900DB2A45 /* Build configuration list for PBXNativeTarget "PlanAWalk" */ = {
+		9C06EE2E2F5E66FD00CA5ECF /* Build configuration list for PBXNativeTarget "PlanAWalk" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				9C28409B2F5E603900DB2A45 /* Debug */,
-				9C28409C2F5E603900DB2A45 /* Release */,
+				9C06EE2F2F5E66FD00CA5ECF /* Debug */,
+				9C06EE302F5E66FD00CA5ECF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 9C2840872F5E603800DB2A45 /* Project object */;
+	rootObject = 9C06EE1B2F5E66FB00CA5ECF /* Project object */;
 }
