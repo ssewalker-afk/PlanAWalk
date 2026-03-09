@@ -116,8 +116,45 @@ class GoalManager: ObservableObject {
         saveData()
     }
     
+    func updateGoal(type: GoalType, target: Double, frequency: WalkingFrequency, 
+                   startDate: Date, duration: GoalDuration, customDurationDays: Int?) {
+        guard var goal = currentGoal else { return }
+        
+        goal.type = type
+        goal.targetValue = target
+        goal.frequency = frequency
+        goal.startDate = startDate
+        goal.duration = duration
+        goal.customDurationDays = customDurationDays
+        
+        // Recalculate current value based on new dates if needed
+        currentGoal = goal
+        saveData()
+        
+        // Refresh progress with new goal parameters
+        Task {
+            await updateProgress()
+        }
+    }
+    
+    func deleteCurrentGoal() {
+        currentGoal = nil
+        
+        // Delete the goal file
+        try? FileManager.default.removeItem(at: goalsURL)
+        
+        // Keep badges and stats, just clear the current goal
+        saveData()
+    }
+    
     func updateProgress() async {
-        guard let goal = currentGoal else { return }
+        guard let goal = currentGoal else {
+            // Even without a goal, we can update lifetime stats
+            await updateLifetimeMiles()
+            await updateLifetimeStats()
+            saveData()
+            return
+        }
         
         do {
             // Fetch workouts for the current goal period
@@ -183,8 +220,11 @@ class GoalManager: ObservableObject {
     
     private func updateLifetimeStats() async {
         // Calculate lifetime steps and hours from all walking workouts
+        print("🔄 updateLifetimeStats called")
         lifetimeSteps = await healthKitManager.fetchLifetimeSteps()
+        print("✅ Lifetime steps updated: \(lifetimeSteps)")
         lifetimeHours = await healthKitManager.fetchLifetimeHours()
+        print("✅ Lifetime hours updated: \(lifetimeHours)")
     }
     
     // MARK: - Badge System
@@ -201,6 +241,17 @@ class GoalManager: ObservableObject {
         }
         if currentStreak >= 7 && !hasBadge(.streak7) {
             awardBadge(.streak7)
+        }
+        if currentStreak >= 14 && !hasBadge(.streak14) {
+            awardBadge(.streak14)
+        }
+        if currentStreak >= 30 && !hasBadge(.streak30) {
+            awardBadge(.streak30)
+        }
+        
+        // Perfect week badge (walked 7 days in a row)
+        if currentStreak >= 7 && !hasBadge(.perfectWeek) {
+            awardBadge(.perfectWeek)
         }
         
         // Progress badges (25%, 50%, 75%)
@@ -221,26 +272,21 @@ class GoalManager: ObservableObject {
             if goal.isCompleted && !hasBadge(.goalComplete) {
                 awardBadge(.goalComplete)
             }
+            
+            // Consistency badge - walked at least 50% of days in goal
+            if goal.daysElapsed >= 7 {
+                let walkedDaysInGoal = walkHistory.filter { walkDate in
+                    walkDate >= goal.startDate && walkDate <= Date()
+                }.count
+                
+                let consistencyRate = Double(walkedDaysInGoal) / Double(goal.daysElapsed)
+                if consistencyRate >= 0.5 && !hasBadge(.consistent) {
+                    awardBadge(.consistent)
+                }
+            }
         }
         
-        // Mileage milestones (based on lifetime miles)
-        if lifetimeMiles >= 10 && !hasBadge(.milestone10) {
-            awardBadge(.milestone10)
-        }
-        if lifetimeMiles >= 50 && !hasBadge(.milestone50) {
-            awardBadge(.milestone50)
-        }
-        if lifetimeMiles >= 100 && !hasBadge(.milestone100) {
-            awardBadge(.milestone100)
-        }
-        if lifetimeMiles >= 500 && !hasBadge(.milestone500) {
-            awardBadge(.milestone500)
-        }
-        if lifetimeMiles >= 1000 && !hasBadge(.milestone1000) {
-            awardBadge(.milestone1000)
-        }
-        
-        // Time-based badges
+        // Time-based badges (earned once per goal)
         for workout in workouts {
             let hour = Calendar.current.component(.hour, from: workout.startDate)
             
@@ -250,6 +296,24 @@ class GoalManager: ObservableObject {
             
             if hour >= 20 && !hasBadge(.nightOwl) {
                 awardBadge(.nightOwl)
+            }
+        }
+        
+        // Speedster badge - for faster than average walks
+        if workouts.count > 1 {
+            let distances = workouts.compactMap { $0.totalDistance?.doubleValue(for: .meter()) }
+            let durations = workouts.map { $0.duration }
+            
+            if !distances.isEmpty && !durations.isEmpty {
+                let speeds = zip(distances, durations).map { distance, duration in
+                    distance / duration // meters per second
+                }
+                
+                if let avgSpeed = speeds.reduce(0, +) / Double(speeds.count) as Double?,
+                   let maxSpeed = speeds.max(),
+                   maxSpeed > avgSpeed * 1.3 && !hasBadge(.speedster) {
+                    awardBadge(.speedster)
+                }
             }
         }
     }

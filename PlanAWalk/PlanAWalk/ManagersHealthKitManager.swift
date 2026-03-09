@@ -63,30 +63,40 @@ class HealthKitManager: ObservableObject {
     
     // Calculate total steps from walking workouts
     func fetchStepsFromWorkouts(workouts: [HKWorkout]) async throws -> Double {
-        guard let stepsType = HKQuantityType.quantityType(forIdentifier: .stepCount) else {
-            return 0
-        }
-        
         var totalSteps = 0.0
         
+        // Try to get steps from workout statistics first
         for workout in workouts {
-            let predicate = HKQuery.predicateForSamples(withStart: workout.startDate, end: workout.endDate, options: .strictStartDate)
-            
-            let steps = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Double, Error>) in
-                let query = HKStatisticsQuery(quantityType: stepsType, quantitySamplePredicate: predicate, options: .cumulativeSum) { _, result, error in
-                    if let error = error {
-                        continuation.resume(throwing: error)
-                        return
-                    }
-                    
-                    let steps = result?.sumQuantity()?.doubleValue(for: HKUnit.count()) ?? 0
-                    continuation.resume(returning: steps)
-                }
-                
-                healthStore.execute(query)
+            if let stepsQuantity = workout.statistics(for: HKQuantityType.quantityType(forIdentifier: .stepCount)!)?.sumQuantity() {
+                totalSteps += stepsQuantity.doubleValue(for: .count())
+            }
+        }
+        
+        // If no steps found in workout statistics, fall back to querying step samples during workout times
+        if totalSteps == 0 && !workouts.isEmpty {
+            guard let stepsType = HKQuantityType.quantityType(forIdentifier: .stepCount) else {
+                return 0
             }
             
-            totalSteps += steps
+            for workout in workouts {
+                let predicate = HKQuery.predicateForSamples(withStart: workout.startDate, end: workout.endDate, options: .strictStartDate)
+                
+                let steps = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Double, Error>) in
+                    let query = HKStatisticsQuery(quantityType: stepsType, quantitySamplePredicate: predicate, options: .cumulativeSum) { _, result, error in
+                        if let error = error {
+                            continuation.resume(throwing: error)
+                            return
+                        }
+                        
+                        let steps = result?.sumQuantity()?.doubleValue(for: HKUnit.count()) ?? 0
+                        continuation.resume(returning: steps)
+                    }
+                    
+                    healthStore.execute(query)
+                }
+                
+                totalSteps += steps
+            }
         }
         
         return totalSteps
@@ -144,12 +154,69 @@ class HealthKitManager: ObservableObject {
     
     // Fetch lifetime steps from all walking workouts
     func fetchLifetimeSteps() async -> Double {
+        print("🔍 Starting fetchLifetimeSteps...")
+        
         do {
             let allWorkouts = try await fetchWalkingWorkouts(from: .distantPast, to: Date())
+            print("📊 Found \(allWorkouts.count) walking workouts")
+            
             let totalSteps = try await fetchStepsFromWorkouts(workouts: allWorkouts)
+            print("👣 Steps from workouts: \(totalSteps)")
+            
+            // If workouts don't have step data, try getting total step count directly
+            if totalSteps == 0 {
+                print("⚠️ No steps from workouts, trying total step count...")
+                let directSteps = await fetchTotalStepCount(from: .distantPast, to: Date())
+                print("👣 Direct step count: \(directSteps)")
+                return directSteps
+            }
+            
             return totalSteps
         } catch {
-            print("Error fetching lifetime steps: \(error.localizedDescription)")
+            print("❌ Error fetching lifetime steps: \(error.localizedDescription)")
+            // Even if workouts fail, try to get total step count
+            let fallbackSteps = await fetchTotalStepCount(from: .distantPast, to: Date())
+            print("👣 Fallback step count: \(fallbackSteps)")
+            return fallbackSteps
+        }
+    }
+    
+    // Fetch total step count for a date range (not limited to workouts)
+    func fetchTotalStepCount(from startDate: Date, to endDate: Date) async -> Double {
+        guard let stepsType = HKQuantityType.quantityType(forIdentifier: .stepCount) else {
+            print("❌ Could not create step count quantity type")
+            return 0
+        }
+        
+        // Use a reasonable start date if distantPast is provided (HealthKit might not like it)
+        let effectiveStartDate = startDate == .distantPast 
+            ? Calendar.current.date(byAdding: .year, value: -10, to: Date()) ?? startDate
+            : startDate
+        
+        print("📅 Querying steps from \(effectiveStartDate) to \(endDate)")
+        
+        let predicate = HKQuery.predicateForSamples(withStart: effectiveStartDate, end: endDate, options: .strictStartDate)
+        
+        do {
+            let steps = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Double, Error>) in
+                let query = HKStatisticsQuery(quantityType: stepsType, quantitySamplePredicate: predicate, options: .cumulativeSum) { _, result, error in
+                    if let error = error {
+                        print("❌ HKStatisticsQuery error: \(error.localizedDescription)")
+                        continuation.resume(throwing: error)
+                        return
+                    }
+                    
+                    let steps = result?.sumQuantity()?.doubleValue(for: HKUnit.count()) ?? 0
+                    print("📊 Query returned \(steps) steps")
+                    continuation.resume(returning: steps)
+                }
+                
+                healthStore.execute(query)
+            }
+            
+            return steps
+        } catch {
+            print("❌ Error fetching total step count: \(error.localizedDescription)")
             return 0.0
         }
     }

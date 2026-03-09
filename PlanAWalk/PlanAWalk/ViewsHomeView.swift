@@ -11,6 +11,8 @@ struct HomeView: View {
     @EnvironmentObject var goalManager: GoalManager
     @EnvironmentObject var healthKitManager: HealthKitManager
     @State private var showingGoalCreation = false
+    @State private var showingGoalEdit = false
+    @State private var showingDeleteConfirmation = false
     @State private var isRefreshing = false
     @State private var showBadgeCelebration = false
     
@@ -118,8 +120,16 @@ struct HomeView: View {
             .toolbar {
                 if goalManager.currentGoal != nil {
                     ToolbarItem(placement: .topBarTrailing) {
-                        Button(action: { showingGoalCreation = true }) {
-                            Image(systemName: "plus.circle.fill")
+                        Menu {
+                            Button(action: { showingGoalEdit = true }) {
+                                Label("Edit Goal", systemImage: "pencil")
+                            }
+                            
+                            Button(role: .destructive, action: { showingDeleteConfirmation = true }) {
+                                Label("Delete Goal", systemImage: "trash")
+                            }
+                        } label: {
+                            Image(systemName: "ellipsis.circle")
                                 .font(.title3)
                         }
                     }
@@ -132,11 +142,32 @@ struct HomeView: View {
                         }
                         .disabled(isRefreshing)
                     }
+                } else {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button(action: { showingGoalCreation = true }) {
+                            Image(systemName: "plus.circle.fill")
+                                .font(.title3)
+                        }
+                    }
                 }
             }
             .sheet(isPresented: $showingGoalCreation) {
                 GoalCreationView()
                     .environmentObject(goalManager)
+            }
+            .sheet(isPresented: $showingGoalEdit) {
+                if let goal = goalManager.currentGoal {
+                    GoalEditView(goal: goal)
+                        .environmentObject(goalManager)
+                }
+            }
+            .confirmationDialog("Delete Goal", isPresented: $showingDeleteConfirmation, titleVisibility: .visible) {
+                Button("Delete Goal", role: .destructive) {
+                    goalManager.deleteCurrentGoal()
+                }
+                Button("Cancel", role: .cancel) { }
+            } message: {
+                Text("Are you sure you want to delete this goal? This action cannot be undone.")
             }
             .overlay {
                 if showBadgeCelebration, let badge = goalManager.newlyEarnedBadge {

@@ -82,6 +82,20 @@ struct SettingsView: View {
                         .foregroundStyle(.secondary)
                 }
                 
+                NavigationLink(destination: PrivacyPolicyView()) {
+                    HStack {
+                        Text("Privacy Policy")
+                        Spacer()
+                    }
+                }
+                
+                NavigationLink(destination: TermsOfServiceView()) {
+                    HStack {
+                        Text("Terms of Service")
+                        Spacer()
+                    }
+                }
+                
                 Link(destination: URL(string: "https://www.apple.com/health/")!) {
                     HStack {
                         Text("Health Data Privacy")

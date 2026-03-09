@@ -12,36 +12,34 @@ enum BadgeType: String, Codable {
     case firstWalk = "First Steps"
     case streak3 = "3 Day Streak"
     case streak7 = "Week Warrior"
+    case streak14 = "Two Week Champion"
+    case streak30 = "Monthly Master"
     case goalComplete = "Goal Crusher"
     case progress25 = "Quarter Way"
     case progress50 = "Halfway Hero"
     case progress75 = "Almost There"
-    case milestone10 = "10 Miles Club"
-    case milestone50 = "50 Miles Club"
-    case milestone100 = "Century Walker"
-    case milestone500 = "500 Mile Legend"
-    case milestone1000 = "1000 Mile Champion"
+    case perfectWeek = "Perfect Week"
     case earlyBird = "Early Bird"
     case nightOwl = "Night Owl"
-    case speedDemon = "Speed Demon"
+    case speedster = "Speedster"
+    case consistent = "Consistency King"
     
     var icon: String {
         switch self {
         case .firstWalk: return "figure.walk.circle.fill"
         case .streak3: return "flame.fill"
         case .streak7: return "star.fill"
+        case .streak14: return "sparkles"
+        case .streak30: return "crown.fill"
         case .goalComplete: return "trophy.fill"
         case .progress25: return "chart.bar.fill"
         case .progress50: return "chart.bar.fill"
         case .progress75: return "chart.bar.fill"
-        case .milestone10: return "10.circle.fill"
-        case .milestone50: return "50.circle.fill"
-        case .milestone100: return "100.square.fill"
-        case .milestone500: return "star.circle.fill"
-        case .milestone1000: return "crown.fill"
+        case .perfectWeek: return "checkmark.seal.fill"
         case .earlyBird: return "sunrise.fill"
         case .nightOwl: return "moon.stars.fill"
-        case .speedDemon: return "hare.fill"
+        case .speedster: return "hare.fill"
+        case .consistent: return "calendar.badge.checkmark"
         }
     }
     
@@ -50,18 +48,17 @@ enum BadgeType: String, Codable {
         case .firstWalk: return .green
         case .streak3: return .orange
         case .streak7: return .purple
+        case .streak14: return .pink
+        case .streak30: return .yellow
         case .goalComplete: return .yellow
         case .progress25: return .cyan
         case .progress50: return .mint
         case .progress75: return .teal
-        case .milestone10: return .blue
-        case .milestone50: return .indigo
-        case .milestone100: return .pink
-        case .milestone500: return .purple
-        case .milestone1000: return .yellow
+        case .perfectWeek: return .green
         case .earlyBird: return .yellow
         case .nightOwl: return .indigo
-        case .speedDemon: return .red
+        case .speedster: return .red
+        case .consistent: return .blue
         }
     }
     
@@ -70,18 +67,17 @@ enum BadgeType: String, Codable {
         case .firstWalk: return "Completed your first walk!"
         case .streak3: return "3 days in a row!"
         case .streak7: return "A full week of walking!"
+        case .streak14: return "14 days in a row! Incredible!"
+        case .streak30: return "30 days in a row! You're unstoppable!"
         case .goalComplete: return "Completed a walking goal!"
         case .progress25: return "You're 25% of the way to your goal!"
         case .progress50: return "You're halfway there! Keep going!"
         case .progress75: return "75% complete! You're almost there!"
-        case .milestone10: return "Walked 10 total miles!"
-        case .milestone50: return "Walked 50 total miles!"
-        case .milestone100: return "Walked 100 total miles!"
-        case .milestone500: return "Walked 500 total miles! Legendary!"
-        case .milestone1000: return "Walked 1000 total miles! Champion!"
+        case .perfectWeek: return "Walked every day this week!"
         case .earlyBird: return "Walked before 8 AM!"
         case .nightOwl: return "Walked after 8 PM!"
-        case .speedDemon: return "Fastest walk yet!"
+        case .speedster: return "Completed a walk faster than usual!"
+        case .consistent: return "Walked regularly throughout your goal!"
         }
     }
 }

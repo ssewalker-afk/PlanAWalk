@@ -70,48 +70,6 @@ struct LifetimeStatsView: View {
                             )
                         }
                         .padding(.horizontal)
-                        
-                        // Lifetime Achievement Badges
-                        VStack(alignment: .leading, spacing: 16) {
-                            HStack {
-                                Text("Lifetime Achievements")
-                                    .font(.title2)
-                                    .fontWeight(.bold)
-                                
-                                Spacer()
-                                
-                                Text("\(lifetimeAchievementBadges.count)")
-                                    .font(.title3)
-                                    .fontWeight(.semibold)
-                                    .foregroundStyle(.secondary)
-                            }
-                            .padding(.horizontal)
-                            
-                            if lifetimeAchievementBadges.isEmpty {
-                                VStack(spacing: 12) {
-                                    Image(systemName: "trophy.fill")
-                                        .font(.system(size: 50))
-                                        .foregroundStyle(.gray.opacity(0.5))
-                                    
-                                    Text("Start walking to earn achievements!")
-                                        .font(.subheadline)
-                                        .foregroundStyle(.secondary)
-                                }
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 40)
-                                .background(.ultraThinMaterial)
-                                .clipShape(RoundedRectangle(cornerRadius: 16))
-                                .padding(.horizontal)
-                            } else {
-                                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
-                                    ForEach(lifetimeAchievementBadges) { badge in
-                                        LifetimeAchievementBadgeCard(badge: badge)
-                                    }
-                                }
-                                .padding(.horizontal)
-                            }
-                        }
-                        .padding(.top, 8)
                     }
                     .padding(.bottom, 20)
                 }
@@ -130,17 +88,11 @@ struct LifetimeStatsView: View {
                     .disabled(isRefreshing)
                 }
             }
-        }
-    }
-    
-    private var lifetimeAchievementBadges: [Badge] {
-        // Filter badges to only show lifetime milestone badges
-        goalManager.badges.filter { badge in
-            switch badge.type {
-            case .milestone10, .milestone50, .milestone100, .milestone500, .milestone1000:
-                return true
-            default:
-                return false
+            .task {
+                // Load lifetime stats when view appears
+                if goalManager.lifetimeSteps == 0 && goalManager.lifetimeHours == 0 {
+                    await refreshData()
+                }
             }
         }
     }
@@ -205,44 +157,6 @@ struct LifetimeStatCard: View {
         .background(.ultraThinMaterial)
         .clipShape(RoundedRectangle(cornerRadius: 20))
         .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 5)
-    }
-}
-
-// MARK: - Lifetime Achievement Badge Card
-
-struct LifetimeAchievementBadgeCard: View {
-    let badge: Badge
-    
-    var body: some View {
-        VStack(spacing: 12) {
-            ZStack {
-                Circle()
-                    .fill(badge.type.color.gradient)
-                    .frame(width: 80, height: 80)
-                    .shadow(color: badge.type.color.opacity(0.3), radius: 10, x: 0, y: 5)
-                
-                Image(systemName: badge.type.icon)
-                    .font(.system(size: 35))
-                    .foregroundStyle(.white)
-            }
-            
-            VStack(spacing: 4) {
-                Text(badge.type.rawValue)
-                    .font(.headline)
-                    .fontWeight(.semibold)
-                    .multilineTextAlignment(.center)
-                    .lineLimit(2)
-                
-                Text(badge.earnedDate.formatted(date: .abbreviated, time: .omitted))
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
-            }
-        }
-        .frame(maxWidth: .infinity)
-        .padding()
-        .background(.ultraThinMaterial)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
-        .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 2)
     }
 }
 

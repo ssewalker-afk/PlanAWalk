@@ -19,6 +19,11 @@ struct GoalCreationView: View {
     @State private var customDurationDays: Int = 30
     @State private var showCustomDurationPicker = false
     
+    // Calculator state
+    @State private var showCalculator = false
+    @State private var calculatorDailyAmount: Double = 0
+    @State private var calculatorDaysPerWeek: Int = 3
+    
     var body: some View {
         NavigationStack {
             Form {
@@ -32,25 +37,8 @@ struct GoalCreationView: View {
                     .pickerStyle(.segmented)
                     .onChange(of: selectedType) { oldValue, newValue in
                         updateDefaultTarget()
+                        updateCalculatorDefaults()
                     }
-                }
-                
-                Section("Target") {
-                    HStack {
-                        Text(targetLabel)
-                            .foregroundStyle(.secondary)
-                        
-                        Spacer()
-                        
-                        TextField("Target", value: $targetValue, format: .number)
-                            .keyboardType(.decimalPad)
-                            .multilineTextAlignment(.trailing)
-                            .frame(width: 100)
-                    }
-                    
-                    Text(targetDescription)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
                 }
                 
                 Section("Timeline") {
@@ -91,6 +79,130 @@ struct GoalCreationView: View {
                     Text(durationSummary)
                         .font(.caption)
                         .foregroundStyle(.secondary)
+                }
+                
+                // Goal Calculator Section
+                Section {
+                    DisclosureGroup("Goal Calculator", isExpanded: $showCalculator) {
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("Calculate your cumulative target based on your duration")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                            
+                            HStack {
+                                Text("Per session")
+                                    .foregroundStyle(.secondary)
+                                
+                                Spacer()
+                                
+                                TextField("Amount", value: $calculatorDailyAmount, format: .number)
+                                    .keyboardType(.decimalPad)
+                                    .multilineTextAlignment(.trailing)
+                                    .frame(width: 80)
+                                
+                                Text(calculatorUnit)
+                                    .foregroundStyle(.secondary)
+                                    .font(.caption)
+                            }
+                            
+                            Picker("Days per week", selection: $calculatorDaysPerWeek) {
+                                ForEach(1...7, id: \.self) { days in
+                                    Text("\(days) day\(days == 1 ? "" : "s")")
+                                }
+                            }
+                            .pickerStyle(.menu)
+                            
+                            if let totalDays = totalDaysInGoal {
+                                let weeksInGoal = Double(totalDays) / 7.0
+                                let totalSessions = weeksInGoal * Double(calculatorDaysPerWeek)
+                                let calculatedTotal = calculatorDailyAmount * totalSessions
+                                
+                                VStack(alignment: .leading, spacing: 8) {
+                                    Divider()
+                                    
+                                    HStack {
+                                        Text("Calculation:")
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                        Spacer()
+                                    }
+                                    
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text("Duration: \(totalDays) days (\(String(format: "%.1f", weeksInGoal)) weeks)")
+                                            .font(.caption2)
+                                            .foregroundStyle(.secondary)
+                                        
+                                        Text("\(formatCalculatorValue(calculatorDailyAmount)) \(calculatorUnit) × \(calculatorDaysPerWeek) days/week × \(String(format: "%.1f", weeksInGoal)) weeks")
+                                            .font(.caption2)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    
+                                    HStack {
+                                        Text("Suggested Target:")
+                                            .font(.subheadline)
+                                            .fontWeight(.semibold)
+                                        
+                                        Spacer()
+                                        
+                                        Text("\(formatCalculatorValue(calculatedTotal)) \(calculatorUnit)")
+                                            .font(.title3)
+                                            .fontWeight(.bold)
+                                            .foregroundStyle(.blue)
+                                    }
+                                    
+                                    Button(action: {
+                                        targetValue = calculatedTotal
+                                    }) {
+                                        HStack {
+                                            Image(systemName: "arrow.down.circle.fill")
+                                            Text("Use This Target")
+                                        }
+                                        .font(.caption)
+                                        .frame(maxWidth: .infinity)
+                                        .padding(.vertical, 8)
+                                    }
+                                    .buttonStyle(.bordered)
+                                    .tint(.blue)
+                                }
+                                .padding(.top, 4)
+                            } else {
+                                Text("Select a duration above to calculate")
+                                    .font(.caption)
+                                    .foregroundStyle(.orange)
+                                    .padding(.top, 4)
+                            }
+                        }
+                        .padding(.vertical, 4)
+                    }
+                } header: {
+                    Text("Need help calculating?")
+                }
+                
+                Section {
+                    HStack {
+                        Text("Cumulative Target")
+                            .foregroundStyle(.secondary)
+                        
+                        Spacer()
+                        
+                        TextField("Target", value: $targetValue, format: .number)
+                            .keyboardType(.decimalPad)
+                            .multilineTextAlignment(.trailing)
+                            .frame(width: 100)
+                        
+                        Text(targetUnit)
+                            .foregroundStyle(.secondary)
+                            .font(.caption)
+                    }
+                    
+                    Text(targetDescription)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                } header: {
+                    Text("Cumulative Target")
+                } footer: {
+                    Text("This is your total goal to achieve over the entire duration, not per day.")
+                        .font(.caption)
                 }
                 
                 Section("Walking Frequency") {
@@ -138,11 +250,35 @@ struct GoalCreationView: View {
         }
     }
     
+    private var targetUnit: String {
+        switch selectedType {
+        case .steps: return "steps"
+        case .miles: return "mi"
+        case .time: return "min"
+        }
+    }
+    
+    private var calculatorUnit: String {
+        switch selectedType {
+        case .steps: return "steps"
+        case .miles: return "miles"
+        case .time: return "min"
+        }
+    }
+    
+    private var totalDaysInGoal: Int? {
+        if selectedDuration == .custom {
+            return customDurationDays
+        } else {
+            return selectedDuration.days
+        }
+    }
+    
     private var targetDescription: String {
         switch selectedType {
-        case .steps: return "Recommended: 10,000 steps per day"
-        case .miles: return "Recommended: 3-5 miles per day"
-        case .time: return "Recommended: 30-60 minutes per day"
+        case .steps: return "Example: For 10,000 steps/day over a week = 70,000 total steps"
+        case .miles: return "Example: For 3 miles/day over a week = 21 total miles"
+        case .time: return "Example: For 45 min/day over a week = 315 total minutes"
         }
     }
     
@@ -180,6 +316,25 @@ struct GoalCreationView: View {
             targetValue = 3.0
         case .time:
             targetValue = 30
+        }
+    }
+    
+    private func updateCalculatorDefaults() {
+        switch selectedType {
+        case .steps:
+            calculatorDailyAmount = 10000
+        case .miles:
+            calculatorDailyAmount = 3.0
+        case .time:
+            calculatorDailyAmount = 45
+        }
+    }
+    
+    private func formatCalculatorValue(_ value: Double) -> String {
+        if selectedType == .miles {
+            return String(format: "%.1f", value)
+        } else {
+            return Int(value).formatted()
         }
     }
     
